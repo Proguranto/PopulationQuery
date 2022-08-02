@@ -20,4 +20,11 @@ public class CensusGroup {
         //System.out.println(lat + " -> " + x);
         return x;
     }
+
+    public void printData() {
+        System.out.println("Population: " + this.population);
+        System.out.println("Real Latitude: " + this.realLatitude);
+        System.out.println("Latitude: " + this.latitude);
+        System.out.println("Longitude: " + this.longitude);
+    }
 }

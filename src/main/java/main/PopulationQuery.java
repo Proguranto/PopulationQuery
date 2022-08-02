@@ -3,6 +3,7 @@ package main;
 import cse332.interfaces.QueryResponder;
 import cse332.types.CensusData;
 import cse332.types.CensusGroup;
+import cse332.types.MapCorners;
 import queryresponders.*;
 
 import java.io.BufferedReader;
@@ -89,6 +90,12 @@ public class PopulationQuery {
 
         // Parse census data based on the given file
         CensusGroup[] censusData = parse(fileName);
+        for (CensusGroup c : censusData) {
+            c.printData();
+            MapCorners m = new MapCorners(c);
+            System.out.println(m.toString());
+            System.out.println();
+        }
 
         // Use the third argument to execute the correct version
         QueryResponder version = null;
