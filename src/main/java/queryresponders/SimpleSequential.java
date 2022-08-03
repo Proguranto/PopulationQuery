@@ -32,19 +32,15 @@ public class SimpleSequential extends QueryResponder {
         this.rows = numRows;
         this.censusData = censusData;
 
+        assert(censusData.length != 0); // In case its empty.
+        this.usMap = new MapCorners(censusData[0]);
+
         // Assuring total population is correct.
         this.totalPopulation = 0;
         for (CensusGroup c : censusData) {
             this.totalPopulation += c.population;
+            this.usMap = this.usMap.encompass(new MapCorners(c));
         }
-
-        // Creating four corners of the US rectangle.
-        // Assuming the data set is ordered where west-east is non-decreasing and
-        // north-south is non-increasing as index grows.
-        assert(censusData.length != 0); // In case its empty.
-        MapCorners northwest = new MapCorners(censusData[0]);
-        MapCorners southeast = new MapCorners(censusData[censusData.length - 1]);
-        this.usMap = northwest.encompass(southeast);
 
         // Getting distance of each column and row.
         this.lenCol = (this.usMap.east - this.usMap.west) / numColumns;
