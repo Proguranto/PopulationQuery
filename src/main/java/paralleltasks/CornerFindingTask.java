@@ -3,6 +3,7 @@ package paralleltasks;
 import cse332.exceptions.NotYetImplementedException;
 import cse332.types.CensusGroup;
 import cse332.types.CornerFindingResult;
+import cse332.types.MapCorners;
 
 import java.util.concurrent.RecursiveTask;
 
@@ -20,18 +21,37 @@ public class CornerFindingTask extends RecursiveTask<CornerFindingResult> {
     int lo, hi;
 
     public CornerFindingTask(CensusGroup[] censusGroups, int lo, int hi) {
-        throw new NotYetImplementedException();
+        this.censusGroups = censusGroups;
+        this.lo = lo;
+        this.hi = hi;
     }
 
     // Returns a pair of MapCorners for the grid and Integer for the total population
     // Key = grid, Value = total population
     @Override
     protected CornerFindingResult compute() {
-        throw new NotYetImplementedException();
+        if (hi - lo <= SEQUENTIAL_CUTOFF) {
+            return sequentialCornerFinding(censusGroups, lo, hi);
+        }
+        int mid = lo + (hi - lo) / 2;
+        CornerFindingTask left = new CornerFindingTask(censusGroups, lo, mid);
+        CornerFindingTask right = new CornerFindingTask(censusGroups, mid, hi);
+        left.fork();
+        CornerFindingResult rightResult = right.compute();
+        CornerFindingResult leftResult = left.join();
+        int totalResult = leftResult.getTotalPopulation() + rightResult.getTotalPopulation();
+        return new CornerFindingResult(rightResult.getMapCorners().encompass(leftResult.getMapCorners()), totalResult);
+
     }
 
     private CornerFindingResult sequentialCornerFinding(CensusGroup[] censusGroups, int lo, int hi) {
-        throw new NotYetImplementedException();
+        MapCorners totalMap = new MapCorners(censusGroups[lo]);
+        int totalPop = 0;
+        for (int i = lo; i < hi; i++) {
+            totalPop += censusGroups[i].population;
+            totalMap = totalMap.encompass(new MapCorners(censusGroups[i]));
+        }
+        return new CornerFindingResult(totalMap, totalPop);
     }
 }
 
