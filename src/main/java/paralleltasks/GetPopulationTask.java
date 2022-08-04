@@ -20,16 +20,65 @@ public class GetPopulationTask extends RecursiveTask<Integer> {
     MapCorners grid;
 
     public GetPopulationTask(CensusGroup[] censusGroups, int lo, int hi, double w, double s, double e, double n, MapCorners grid) {
-        throw new NotYetImplementedException();
+        this.censusGroups = censusGroups;
+        this.lo = lo;
+        this.hi = hi;
+        this.w = w;
+        this.s = s;
+        this.e = e;
+        this.n = n;
+        this.grid = grid;
     }
 
     // Returns a number for the total population
     @Override
     protected Integer compute() {
-        throw new NotYetImplementedException();
+        // Base case: length of [lo, hi) <= cutoff.
+        if (lo - hi <= SEQUENTIAL_CUTOFF) {
+            return sequentialGetPopulation(this.censusGroups, this.lo, this.hi, this.w, this.s, this.e, this.n);
+        }
+        // Recursive case:
+        // (1) Split ranges into 2: [lo, mid) and [mid, hi).
+        // (2) Sum up the population from both ranges and return.
+        else {
+            int mid = (lo + hi)/2;
+
+            GetPopulationTask range1 = new GetPopulationTask(this.censusGroups, this.lo, mid, this.w, this.s, this.e, this.n, this.grid);
+            GetPopulationTask range2 = new GetPopulationTask(this.censusGroups, mid, this.hi, this.w, this.s, this.e, this.n, this.grid);
+
+            Integer totalPop = range1.compute() + range2.compute();
+
+            return totalPop;
+        }
     }
 
     private Integer sequentialGetPopulation(CensusGroup[] censusGroups, int lo, int hi, double w, double s, double e, double n) {
-        throw new NotYetImplementedException();
+        Integer population = 0;
+        boolean borderEast = (e == this.grid.east);
+        boolean borderNorth = (n == this.grid.north);
+
+        for (int i = lo; i < hi; i += 1) {
+            CensusGroup c = censusGroups[i];
+
+            if (borderEast && borderNorth) {
+                if ((w <= c.longitude && c.longitude <= e) && (s <= c.latitude && c.latitude <= n)) {
+                    population += c.population;
+                }
+            } else if (!borderEast && borderNorth) {
+                if ((w <= c.longitude && c.longitude < e) && (s <= c.latitude && c.latitude <= n)) {
+                    population += c.population;
+                }
+            } else if (borderEast && !borderNorth) {
+                if ((w <= c.longitude && c.longitude <= e) && (s <= c.latitude && c.latitude < n)) {
+                    population += c.population;
+                }
+            } else {
+                if ((w <= c.longitude && c.longitude < e) && (s <= c.latitude && c.latitude < n)) {
+                    population += c.population;
+                }
+            }
+        }
+
+        return population;
     }
 }
