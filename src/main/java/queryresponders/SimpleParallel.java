@@ -11,6 +11,11 @@ import paralleltasks.GetPopulationTask;
 import java.util.concurrent.ForkJoinPool;
 
 public class SimpleParallel extends QueryResponder {
+    CensusGroup[] census;
+    MapCorners grid;
+    int numRows;
+    int numColumns;
+
     private static final ForkJoinPool POOL = new ForkJoinPool();
 
     // Represents number of columns.
