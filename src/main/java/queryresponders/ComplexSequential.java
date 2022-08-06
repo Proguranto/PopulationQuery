@@ -22,13 +22,15 @@ public class ComplexSequential extends QueryResponder {
     private double lenCol;
     // Census data.
     private CensusGroup[] censusData;
-    private int[][] grid;
+    private int[][] grid1;
+    private int[][] grid2;
 
     public ComplexSequential(CensusGroup[] censusData, int numColumns, int numRows) {
         this.rows = numRows;
         this.cols = numColumns;
         this.censusData = censusData;
-        this.grid = new int[numRows + 1][numColumns + 1];
+        this.grid1 = new int[numRows + 1][numColumns + 1];
+        this.grid2 = new int[numRows + 1][numColumns + 1];
 
         assert(censusData.length != 0); // In case its empty.
         this.usMap = new MapCorners(censusData[0]);
@@ -46,6 +48,8 @@ public class ComplexSequential extends QueryResponder {
 
         // @TODO
         // Fill the grid with the total population for that grid cell
+        // Our grid cells are labeled starting from (1, 1) in the bottom-left corner. (You can
+        // implement it differently, but this is how queries are given.)
         //                  3  |  8   7   5
         //                     |
         //                  2  |  0   1   2
@@ -59,11 +63,12 @@ public class ComplexSequential extends QueryResponder {
             double col;
             // need to initialize row, col and determine where the population should go in the grid
 
-            //grid[(int) row][(int) (col)] += c.population;
+            //grid1[(int) row][(int) (col)] += c.population;
         }
 
         // @TODO
         // Modify the grid with the total for that grid cell (lower-left/South-West corner is (1,1))
+        // grid2[i][j] = grid1[i][j] + grid2[i - 1][j] + grid2[i][j - 1] - grid2[i - 1][j - 1]
         //                  3  |  11  21  38
         //                     |
         //                  2  |  3   6   18
@@ -72,9 +77,9 @@ public class ComplexSequential extends QueryResponder {
         //                     |------------
         //                  0     1   2   3
         //                 row/col
-        for (int i = rows - 1; i >= 0; i--) {
+        for (int i = 1; i < rows; i++) {
             for (int j = 1; j < cols + 1; j++) {
-                grid[i][j] = grid[i][j] + grid[i + 1][j] + grid[i][j - 1] - grid[i + 1][j - 1];
+                grid2[i][j] = grid1[i][j] + grid2[i - 1][j] + grid2[i][j - 1] - grid2[i - 1][j - 1];
             }
         }
     }
@@ -85,6 +90,6 @@ public class ComplexSequential extends QueryResponder {
         int r2 = rows - north;
         int c1 = west;
         int c2 = east;
-        return grid[r2][c2] - grid[r1 + 1][c2] - grid[r2][c1 - 1] + grid[r1 + 1][c1 - 1];
+        return grid2[r2][c2] - grid2[r1 - 1][c2] - grid2[r2][c1 - 1] + grid2[r1 - 1][c1 - 1];
     }
 }
