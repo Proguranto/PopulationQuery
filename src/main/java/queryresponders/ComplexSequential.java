@@ -47,7 +47,7 @@ public class ComplexSequential extends QueryResponder {
         this.lenRow = (this.usMap.north - this.usMap.south) / numRows;
 
         // @TODO
-        // Fill the grid with the total population for that grid cell
+        // Fill the grid with the total population for that grid cell (lower-left/South-West corner is (1,1))
         // Our grid cells are labeled starting from (1, 1) in the bottom-left corner. (You can
         // implement it differently, but this is how queries are given.)
         //                  3  |  8   7   5
@@ -63,7 +63,7 @@ public class ComplexSequential extends QueryResponder {
             double col;
             // need to initialize row, col and determine where the population should go in the grid
 
-            //grid1[(int) row][(int) (col)] += c.population;
+            //grid1[(int) row][(int) col] += c.population;
         }
 
         // @TODO
