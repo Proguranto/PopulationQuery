@@ -45,14 +45,14 @@ public class ComplexSequential extends QueryResponder {
         this.lenRow = (this.usMap.north - this.usMap.south) / numRows;
 
         // @TODO
-        // Filling the grid with the total population for that grid cell
+        // Fill the grid with the total population for that grid cell
         //                  3  |  8   7   5
         //                     |
         //                  2  |  0   1   2
         //                     |
         //                  1  |  3   2   10
         //                     |------------
-        //                  0  |  1   2   3
+        //                  0     1   2   3
         //                 row/col
         for (CensusGroup c : censusData) {
             double row;
@@ -70,7 +70,7 @@ public class ComplexSequential extends QueryResponder {
         //                     |
         //                  1  |  3   5   15
         //                     |------------
-        //                  0  |  1   2   3
+        //                  0     1   2   3
         //                 row/col
         for (int i = rows - 1; i >= 0; i--) {
             for (int j = 1; j < cols + 1; j++) {
