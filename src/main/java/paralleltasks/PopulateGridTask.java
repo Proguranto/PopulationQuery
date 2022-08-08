@@ -22,6 +22,9 @@ public class PopulateGridTask extends RecursiveTask<int[][]> {
     double cellWidth, cellHeight;
 
     public PopulateGridTask(CensusGroup[] censusGroups, int lo, int hi, int numRows, int numColumns, MapCorners corners, double cellWidth, double cellHeight) {
+        if (lo > hi) {
+            throw new IllegalArgumentException("lo cannot be greater than hi!");
+        }
         this.lo = lo;
         this.hi = hi;
         this.numColumns = numColumns;

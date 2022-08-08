@@ -38,6 +38,13 @@ public class ComplexParallel extends QueryResponder {
     private int[][] grid2;
 
     public ComplexParallel(CensusGroup[] censusData, int numColumns, int numRows) {
+        if (numColumns < 1) {
+            throw new IllegalArgumentException("Invalid number of columns!");
+        }
+        if (numRows < 1) {
+            throw new IllegalArgumentException("Invalid number of rows!");
+        }
+
         this.cols = numColumns;
         this.rows = numRows;
         this.censusData = censusData;

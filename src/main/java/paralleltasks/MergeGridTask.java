@@ -39,10 +39,10 @@ public class MergeGridTask extends RecursiveAction {
             int midRow = (rowLo + rowHi)/2;
             int midCol = (colLo + colHi)/2;
 
-            new MergeGridTask(this.left, this.right, this.rowLo, midRow, this.colLo, midCol);
-            new MergeGridTask(this.left, this.right, this.rowLo, midRow, midCol, this.colHi);
-            new MergeGridTask(this.left, this.right, midRow, this.rowHi, this.colLo, midCol);
-            new MergeGridTask(this.left, this.right, midRow, this.rowHi, midCol, this.colHi);
+            new MergeGridTask(this.left, this.right, this.rowLo, midRow, this.colLo, midCol).compute();
+            new MergeGridTask(this.left, this.right, this.rowLo, midRow, midCol, this.colHi).compute();
+            new MergeGridTask(this.left, this.right, midRow, this.rowHi, this.colLo, midCol).compute();
+            new MergeGridTask(this.left, this.right, midRow, this.rowHi, midCol, this.colHi).compute();
         }
     }
 
