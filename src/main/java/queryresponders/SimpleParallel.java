@@ -37,6 +37,13 @@ public class SimpleParallel extends QueryResponder {
     private CensusGroup[] censusData;
 
     public SimpleParallel(CensusGroup[] censusData, int numColumns, int numRows) {
+        if (numColumns < 1) {
+            throw new IllegalArgumentException("Invalid number of columns!");
+        }
+        if (numRows < 1) {
+            throw new IllegalArgumentException("Invalid number of rows!");
+        }
+
         this.rows = numRows;
         this.cols = numColumns;
         this.censusData = censusData;
@@ -51,6 +58,19 @@ public class SimpleParallel extends QueryResponder {
 
     @Override
     public int getPopulation(int west, int south, int east, int north) {
+        if (west < 1 || west > this.cols) {
+            throw new IllegalArgumentException("Invalid west field!");
+        }
+        if (south < 1 || south > this.rows) {
+            throw new IllegalArgumentException("Invalid south field!");
+        }
+        if (east < west || east > this.cols) {
+            throw new IllegalArgumentException("Invalid east field!");
+        }
+        if (north < south || north > this.rows) {
+            throw new IllegalArgumentException("Invalid west field!");
+        }
+
         double qrWest = (west - 1)  * lenCol + this.usMap.west;
         double qrEast = east * lenCol + this.usMap.west;
         double qrSouth = (south - 1) * lenRow + this.usMap.south;

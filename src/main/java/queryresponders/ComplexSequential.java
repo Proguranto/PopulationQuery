@@ -13,16 +13,23 @@ public class ComplexSequential extends QueryResponder {
 
     // Represents number of rows.
     private int rows;
+
     // Represent the four corners of the US rectangle.
     private MapCorners usMap;
+
     // Length of each row.
     private double lenRow;
 
     // Length of each column.
     private double lenCol;
+
     // Census data.
     private CensusGroup[] censusData;
+
+    // Grid containing population size in each section.
     private int[][] grid1;
+
+    // Pre-processed grid1.
     private int[][] grid2;
 
     public ComplexSequential(CensusGroup[] censusData, int numColumns, int numRows) {
@@ -59,11 +66,37 @@ public class ComplexSequential extends QueryResponder {
         //                  0     1   2   3
         //                 row/col
         for (CensusGroup c : censusData) {
-            double row;
-            double col;
-            // need to initialize row, col and determine where the population should go in the grid
+            // Given an arbitrary c.latitude.
+            // (c.latitude - usMap.south) / lenRow = the number of rows + h where 0<h<1
+            // e.g. if c is in the middle of the second row then
+            //      (c.lat - usMap.south) / lenRow = 1.5
+            // Hence, to get the row number it lives in we want to take
+            // the ceiling.
+            // Same logic for c.longitude.
+            // Additionally, we need to check for edge cases which is when
+            // c.lat = usMap.south/north and c.long = usMap.west/east
+            // Note that technically it's supposed to work for north and east,
+            // but due to inaccuracy of division, ceil function might do unnecessary
+            // behavior.
+            int row;
+            int col;
 
-            //grid1[(int) row][(int) col] += c.population;
+            if (c.latitude == usMap.south) {
+                row = 1;
+            } else if (c.latitude == usMap.north) {
+                row = this.rows;
+            } else {
+                row = (int) (Math.ceil((c.latitude - usMap.south)/this.lenRow));
+            }
+            if (c.longitude == usMap.west) {
+                col = 1;
+            } else if (c.longitude == usMap.east) {
+                col = this.cols;
+            } else {
+                col = (int) (Math.ceil((c.longitude - usMap.west)/this.lenCol));
+            }
+
+            grid1[row][col] += c.population;
         }
 
         // @TODO
@@ -77,8 +110,8 @@ public class ComplexSequential extends QueryResponder {
         //                     |------------
         //                  0     1   2   3
         //                 row/col
-        for (int i = 1; i < rows; i++) {
-            for (int j = 1; j < cols + 1; j++) {
+        for (int i = 1; i <= this.rows; i++) {
+            for (int j = 1; j <= this.cols; j++) {
                 grid2[i][j] = grid1[i][j] + grid2[i - 1][j] + grid2[i][j - 1] - grid2[i - 1][j - 1];
             }
         }
@@ -86,10 +119,7 @@ public class ComplexSequential extends QueryResponder {
 
     @Override
     public int getPopulation(int west, int south, int east, int north) {
-        int r1 = rows - south;
-        int r2 = rows - north;
-        int c1 = west;
-        int c2 = east;
-        return grid2[r2][c2] - grid2[r1 - 1][c2] - grid2[r2][c1 - 1] + grid2[r1 - 1][c1 - 1];
+        // Note that top-right is north-east and bottom left is south-west of the query rectangle.
+        return grid2[north][east] - grid2[south-1][east] - grid2[north][west-1] + grid2[south-1][west-1];
     }
 }

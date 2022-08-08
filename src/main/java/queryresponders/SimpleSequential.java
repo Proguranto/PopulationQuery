@@ -28,6 +28,13 @@ public class SimpleSequential extends QueryResponder {
     private CensusGroup[] censusData;
 
     public SimpleSequential(CensusGroup[] censusData, int numColumns, int numRows) {
+        if (numColumns < 1) {
+            throw new IllegalArgumentException("Invalid number of columns!");
+        }
+        if (numRows < 1) {
+            throw new IllegalArgumentException("Invalid number of rows!");
+        }
+
         this.cols = numColumns;
         this.rows = numRows;
         this.censusData = censusData;

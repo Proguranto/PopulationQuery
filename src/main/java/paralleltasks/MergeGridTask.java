@@ -15,16 +15,43 @@ public class MergeGridTask extends RecursiveAction {
     int rowLo, rowHi, colLo, colHi;
 
     public MergeGridTask(int[][] left, int[][] right, int rowLo, int rowHi, int colLo, int colHi) {
-        throw new NotYetImplementedException();
+        this.left = left;
+        this.right = right;
+        this.rowLo = rowLo;
+        this.rowHi = rowHi;
+        this.colLo = colLo;
+        this.colHi = colHi;
     }
 
     @Override
     protected void compute() {
-        throw new NotYetImplementedException();
+        // Assumption: y \in [this.rowLo, this.rowHi) and x \in [this.colLo, this.colHi)
+        // Base Case: # of elements in chunks <= cutoff
+        if ((this.rowHi - this.rowLo) * (this.colHi - this.colLo) <= SEQUENTIAL_CUTOFF) {
+            sequentialMergeGird();
+        }
+        // Recursive case: Split into 4 chunks and recurse through 4 chunks.
+        // Chunk 1: [rowLo, midRow) [colLo, midCol)
+        // Chunk 2: [rowLo, midRow) [midCol, colHi)
+        // Chunk 3: [midRow, rowHi) [colLo, midCol)
+        // Chunk 4: [midRow, rowHi) [midCol, colHi)
+        else {
+            int midRow = (rowLo + rowHi)/2;
+            int midCol = (colLo + colHi)/2;
+
+            new MergeGridTask(this.left, this.right, this.rowLo, midRow, this.colLo, midCol);
+            new MergeGridTask(this.left, this.right, this.rowLo, midRow, midCol, this.colHi);
+            new MergeGridTask(this.left, this.right, midRow, this.rowHi, this.colLo, midCol);
+            new MergeGridTask(this.left, this.right, midRow, this.rowHi, midCol, this.colHi);
+        }
     }
 
     // according to google gird means "prepare oneself for something difficult or challenging" so this typo is intentional :)
     private void sequentialMergeGird() {
-        throw new NotYetImplementedException();
+        for (int i = this.rowLo; i < this.rowHi; i += 1) {
+            for (int j = this.colLo; j < this.colHi; j += 1) {
+                this.left[i][j] += this.right[i][j];
+            }
+        }
     }
 }

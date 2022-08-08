@@ -32,7 +32,7 @@ public class CornerFindingTask extends RecursiveTask<CornerFindingResult> {
     protected CornerFindingResult compute() {
         // Base case: When [lo, hi) length is less than or equal the
         // cutoff than it's a leaf node.
-        if (lo - hi <= SEQUENTIAL_CUTOFF) {
+        if (hi - lo <= SEQUENTIAL_CUTOFF) {
             return sequentialCornerFinding(this.censusGroups, lo, hi);
         }
         // Recursive case: Split range in 2, [lo, mid) and [mid, hi).

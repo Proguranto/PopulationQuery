@@ -34,7 +34,7 @@ public class GetPopulationTask extends RecursiveTask<Integer> {
     @Override
     protected Integer compute() {
         // Base case: length of [lo, hi) <= cutoff.
-        if (lo - hi <= SEQUENTIAL_CUTOFF) {
+        if (hi - lo <= SEQUENTIAL_CUTOFF) {
             return sequentialGetPopulation(this.censusGroups, this.lo, this.hi, this.w, this.s, this.e, this.n);
         }
         // Recursive case:
