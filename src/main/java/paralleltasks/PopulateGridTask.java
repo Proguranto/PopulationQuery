@@ -46,11 +46,17 @@ public class PopulateGridTask extends RecursiveTask<int[][]> {
         // (2) Merge both left and right nodes and return.
         else {
             int mid = (this.lo + this.hi)/2;
-            int[][] left = new PopulateGridTask(censusGroups, this.lo, mid, this.numRows, this.numColumns, this.corners, this.cellWidth, this.cellHeight).compute();
-            int[][] right = new PopulateGridTask(censusGroups, mid, this.hi, this.numRows, this.numColumns, this.corners, this.cellWidth, this.cellHeight).compute();
 
-            POOL.invoke(new MergeGridTask(left, right, 1, this.numRows + 1, 1, this.numColumns + 1));
-            return left;
+            PopulateGridTask left = new PopulateGridTask(censusGroups, this.lo, mid, this.numRows, this.numColumns, this.corners, this.cellWidth, this.cellHeight);
+            PopulateGridTask right = new PopulateGridTask(censusGroups, mid, this.hi, this.numRows, this.numColumns, this.corners, this.cellWidth, this.cellHeight);
+
+            right.fork();
+
+            int[][] leftResult = left.compute();
+            int[][] rightResult = right.join();
+
+            POOL.invoke(new MergeGridTask(leftResult, rightResult, 1, this.numRows + 1, 1, this.numColumns + 1));
+            return leftResult;
         }
     }
 

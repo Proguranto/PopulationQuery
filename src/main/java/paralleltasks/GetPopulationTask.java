@@ -46,7 +46,9 @@ public class GetPopulationTask extends RecursiveTask<Integer> {
             GetPopulationTask range1 = new GetPopulationTask(this.censusGroups, this.lo, mid, this.w, this.s, this.e, this.n, this.grid);
             GetPopulationTask range2 = new GetPopulationTask(this.censusGroups, mid, this.hi, this.w, this.s, this.e, this.n, this.grid);
 
-            Integer totalPop = range1.compute() + range2.compute();
+            range2.fork();
+
+            Integer totalPop = range1.compute() + range2.join();
 
             return totalPop;
         }

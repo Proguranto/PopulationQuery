@@ -43,8 +43,10 @@ public class CornerFindingTask extends RecursiveTask<CornerFindingResult> {
             CornerFindingTask range1 = new CornerFindingTask(this.censusGroups, lo, mid);
             CornerFindingTask range2 = new CornerFindingTask(this.censusGroups, mid, hi);
 
+            range2.fork();
+
             CornerFindingResult leftNode = range1.compute();
-            CornerFindingResult rightNode = range2.compute();
+            CornerFindingResult rightNode = range2.join();
             int totalPop = leftNode.getTotalPopulation() + rightNode.getTotalPopulation();
             MapCorners map = leftNode.getMapCorners().encompass(rightNode.getMapCorners());
 
