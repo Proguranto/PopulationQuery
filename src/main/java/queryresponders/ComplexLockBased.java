@@ -76,7 +76,8 @@ public class ComplexLockBased extends QueryResponder {
             threads[i] = new PopulateLockedGridTask(this.censusData, i * len/NUM_THREADS, (i+1) * len/NUM_THREADS, this.rows, this.cols, this.usMap, this.lenCol, this.lenRow, this.grid1, lockGrid);
             threads[i].start();
         }
-        new PopulateLockedGridTask(this.censusData, (NUM_THREADS-1) * len/NUM_THREADS, (NUM_THREADS) * len/NUM_THREADS, this.rows, this.cols, this.usMap, this.lenCol, this.lenRow, this.grid1, lockGrid).run();
+        threads[NUM_THREADS - 1] = new PopulateLockedGridTask(this.censusData, (NUM_THREADS-1) * len/NUM_THREADS, (NUM_THREADS) * len/NUM_THREADS, this.rows, this.cols, this.usMap, this.lenCol, this.lenRow, this.grid1, lockGrid);
+        threads[NUM_THREADS - 1 ].run();
         for (int i = 0; i < NUM_THREADS - 1; i++) {
             try {
                 threads[i].join();
