@@ -10,53 +10,24 @@ import queryresponders.*;
 
 public class WriteUpTests extends QueryResponderTests {
 
-    @Test
-    public void getPopSimpleSequential() {
-        long totalTime = 0;
-        long avgTime;
-        Random random = new Random();
-        random.setSeed(2548);
-        int n = random.nextInt(500) + 1;
-        int s = random.nextInt(n) + 1;
-        int e = random.nextInt(100) + 1;
-        int w = random.nextInt(e) + 1;
-        System.out.printf("%d,%d,%d,%d\n",n,s,e,w);
-        for (int i = 0; i < 15; i++) {
-            long startTimer = System.nanoTime();
-            CensusGroup[] data;
-            data = readCensusdata();
-            QueryResponder SimpleSequential = new SimpleSequential(data, 100, 500);
-            for (int j = 0; j < 2; j++) {
-                SimpleSequential.getPopulation(w, s, e, n);
-            }
-            long endTimer = System.nanoTime();
-            // Eliminate 5 warm up runs
-            if (i >= 5) {
-                totalTime += (endTimer - startTimer);
-            }
-        }
-        avgTime = totalTime / 10;
-        System.out.println("Simple Sequential avg time: " + avgTime  + " ns");
-    }
-
 //    @Test
-//    public void getPopComplexSequential() {
+//    public void getPopSimpleSequential() {
 //        long totalTime = 0;
-//        long avgTime = 0;
+//        long avgTime;
 //        Random random = new Random();
-//        random.setSeed(2548);
-//        int n = random.nextInt(500) + 1;
+//        random.setSeed(761);
+//        int n = random.nextInt(100) + 1;
 //        int s = random.nextInt(n) + 1;
-//        int e = random.nextInt(100) + 1;
+//        int e = random.nextInt(500) + 1;
 //        int w = random.nextInt(e) + 1;
 //        System.out.printf("%d,%d,%d,%d\n",n,s,e,w);
-//        for (int i = 0; i < 15; i++) { //warm up + actual timing
+//        for (int i = 0; i < 15; i++) {
 //            long startTimer = System.nanoTime();
 //            CensusGroup[] data;
 //            data = readCensusdata();
-//            QueryResponder ComplexSequential = new ComplexSequential(data, 100, 500);
-//            for (int j = 0; j < 1; j++) {
-//                ComplexSequential.getPopulation(w, s, e, n);
+//            QueryResponder SimpleSequential = new SimpleSequential(data, 500, 100);
+//            for (int j = 0; j <10 ; j++) {
+//                SimpleSequential.getPopulation(w,s,e,n);
 //            }
 //            long endTimer = System.nanoTime();
 //            // Eliminate 5 warm up runs
@@ -65,6 +36,35 @@ public class WriteUpTests extends QueryResponderTests {
 //            }
 //        }
 //        avgTime = totalTime / 10;
-//        System.out.println("Complex Sequential avg time: " + avgTime + " ns");
+//        System.out.println("Simple Sequential avg time: " + avgTime / 1000000.0 + " ms");
 //    }
+@Test
+ void getPopComplexSequential() {
+        long totalTime = 0;
+        long avgTime = 0;
+        Random random = new Random();
+
+        random.setSeed(2500);
+        int n = random.nextInt(100) + 1;
+        int s = random.nextInt(n) + 1;
+        int e = random.nextInt(500) + 1;
+        int w = random.nextInt(e) + 1;
+        System.out.printf("%d,%d,%d,%d\n",n,s,e,w);
+        for (int i = 0; i < 20; i++) {
+            long startTimer = System.nanoTime();
+            CensusGroup[] data;
+            data = readCensusdata();
+            QueryResponder ComplexSequential = new ComplexSequential(data, 500, 100);
+            for (int j = 0; j < 30; j++) {
+                ComplexSequential.getPopulation(w,s,e,n);;
+            }
+            long endTimer = System.nanoTime();
+            // Eliminate 5 warm up runs
+            if (i >= 5) {
+                totalTime += (endTimer - startTimer);
+            }
+        }
+        avgTime = totalTime / 10;
+        System.out.println("Complex Sequential avg time: " + avgTime / 1000000.0 + " ms");
+    }
 }
