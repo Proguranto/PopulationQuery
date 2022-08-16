@@ -9,7 +9,6 @@ import queryresponders.*;
 
 
 public class WriteUpTests extends QueryResponderTests {
-
     @Test
     public void getPopSimpleSequential() {
         long totalTime = 0;
@@ -36,7 +35,7 @@ public class WriteUpTests extends QueryResponderTests {
             }
         }
         avgTime = totalTime / 10;
-        System.out.println("Simple Sequential avg time: " + avgTime  + " ns");
+        System.out.println("Simple Sequential avg time: " + avgTime / 1000000.0 + " ms");
     }
 
     @Test
@@ -45,6 +44,7 @@ public class WriteUpTests extends QueryResponderTests {
         long avgTime = 0;
         Random random = new Random();
         random.setSeed(2548);
+
         int n = random.nextInt(100) + 1;
         int s = random.nextInt(n) + 1;
         int e = random.nextInt(500) + 1;
@@ -65,6 +65,6 @@ public class WriteUpTests extends QueryResponderTests {
             }
         }
         avgTime = totalTime / 10;
-        System.out.println("Complex Sequential avg time: " + avgTime + " ns");
+        System.out.println("Complex Sequential avg time: " + avgTime / 1000000.0 + " ms");
     }
 }
