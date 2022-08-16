@@ -24,11 +24,43 @@ public class PopulateLockedGridTask extends Thread {
 
     public PopulateLockedGridTask(CensusGroup[] censusGroups, int lo, int hi, int numRows, int numColumns, MapCorners corners,
                                   double cellWidth, double cellHeight, int[][] popGrid, Lock[][] lockGrid) {
-        throw new NotYetImplementedException();
+        this.censusGroups = censusGroups;
+        this.lo = lo;
+        this.hi = hi;
+        this.numRows = numRows;
+        this.numColumns = numColumns;
+        this.corners = corners;
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
+        this.populationGrid = popGrid;
+        this.lockGrid = lockGrid;
     }
 
     @Override
     public void run() {
-        throw new NotYetImplementedException();
+        for (int i = this.lo; i < this.hi; i++) {
+            int row;
+            int col;
+            CensusGroup c = censusGroups[i];
+
+            if (c.latitude == this.corners.south) {
+                row = 1;
+            } else if (c.latitude == this.corners.north) {
+                row = this.numRows;
+            } else {
+                row = (int) (Math.ceil((c.latitude - this.corners.south)/this.cellHeight));
+            }
+            if (c.longitude == this.corners.west) {
+                col = 1;
+            } else if (c.longitude == this.corners.east) {
+                col = this.numColumns;
+            } else {
+                col = (int) (Math.ceil((c.longitude - this.corners.west)/this.cellWidth));
+            }
+
+            this.lockGrid[row][col].lock();
+            this.populationGrid[row][col] += c.population;
+            this.lockGrid[row][col].unlock();
+        }
     }
 }
